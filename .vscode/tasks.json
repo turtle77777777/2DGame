@@ -1,0 +1,69 @@
+{
+	"version": "2.0.0",
+	"windows": {
+	  "options": {
+		"shell": {
+		  "executable": "cmd.exe",
+		  "args": [
+			"/C",
+			// The path to VsDevCmd.bat depends on the version of Visual Studio you have installed.
+			"\"C:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/Common7/Tools/VsDevCmd.bat\"",
+			"&&"
+		  ]
+		}
+	  }
+	},
+	"tasks": [
+	  {
+		"type": "shell",
+		"label": "cl.exe build 2DGame/main.cpp",
+		"command": "cl.exe",
+		"args": [
+		  "/EHsc",
+		  "/std:c++17",
+		  "/I",
+		  "${workspaceFolder}",
+		  "/I",
+		  "${workspaceFolder}\\engine",
+		  "/I",
+		  "${workspaceFolder}\\engine\\include",
+		  "/Fe:",
+		  "${workspaceFolder}\\main.exe",
+		  "main.cpp",
+		  "/link",
+		  "/SUBSYSTEM:CONSOLE",
+		  "/LIBPATH:${workspaceFolder}\\engine\\lib\\x86",
+		  "Shell32.lib",
+		  "SDL2.lib",
+		  "SDL2main.lib",
+		  "SDL2_image.lib"
+		],
+		"problemMatcher": ["$msCompile"]
+	  },
+	  {
+		  "type": "shell",
+		  "label": "cd",
+		  "command": "cd ${workspaceFolder}"
+	  },
+	  {
+		  "type": "shell",
+		  "label": "cleanup",
+		  "command": "del main.obj"
+	  },
+	  {
+		  "type": "process",
+		  "label": "Build",
+		  "command": "${workspaceFolder}\\main.exe",
+		  "group": {
+			"kind": "build",
+			"isDefault": true
+		  },
+		  "dependsOn": [
+			"cl.exe build 2DGame/main.cpp",
+			"cleanup",
+			"cd"
+		  ],
+		  "dependsOrder": "sequence"
+	  }
+	]
+  }
